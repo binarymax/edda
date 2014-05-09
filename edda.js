@@ -9,12 +9,16 @@
 var fs = require('fs');
 var rest = require('restlang');
 var _ = require('underscore');
+var tools = require('./tools');
 
 var Edda = module.exports = {};
 
 var load = function(path,callback) {
 
-	var api = [];
+	var data = {};
+
+	data.api = [];
+	data.files = [];
 
 	var revar = /\w+\.rest$/i;
 	fs.readdir(path,function(err,files){
@@ -26,7 +30,7 @@ var load = function(path,callback) {
 				file = files[i];
 				if (revar.test(file)) {
 					total++;
-					console.log('Edda found restlang specification',file);
+					data.files.push(path+file);
 					fs.readFile(path+file,'utf8',function(err,source){
 						if (err) {
 							errors.push(err);
@@ -37,10 +41,10 @@ var load = function(path,callback) {
 							} catch (ex) {
 								errors.push(ex);
 							}
-							if (spec) api = api.concat(spec);
+							if (spec) data.api = data.api.concat(spec);
 						}
 						if(++done===total) {
-							errors.length ? callback(errors,api) : callback(null,api);
+							errors.length ? callback(errors,data) : callback(null,data);
 						}
 					});
 				}
@@ -50,32 +54,29 @@ var load = function(path,callback) {
 
 };
 
-var generate = function(api,template,callback) {
+var generate = function(data,template,callback) {
 	fs.readFile(template,'utf8',function(err,source){
 		if (err) {
 			callback(err);
 		} else {
 			template = _.template(source);
-			source = template({api:api});
+			source = template(data);
 			callback(null,source);
 		}
 	});
 };
 
-var run = Edda.run = function(path,template,settings,outfile) {
+var run = Edda.run = function(path,template,data,settings,callback) {
 	if(settings) {
 		_.templateSettings = {
 		  interpolate: /\{\{(.+?)\}\}/g
 		};
 	}
 
-	load(path,function(err,api){
-		generate(api,template,function(err,out){
-			if(err) {
-				console.error(err);
-			} else {
-				console.log(out);
-			}
-		})
+	load(path,function(err,loaded){
+		data.edda = tools;
+		data.api = loaded.api;
+		data.files = loaded.files;
+		generate(data,template,callback);
 	});
 };
