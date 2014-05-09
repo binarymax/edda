@@ -1,4 +1,3 @@
-edda
-====
+# Edda
 
-Documentation generation for Heimdall APIs
+Output generator for restlang

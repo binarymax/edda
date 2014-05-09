@@ -1,10 +1,11 @@
 {
   "name": "edda",
   "version": "0.0.0",
-  "description": "Documentation generation for Heimdall APIs",
+  "description": "Output generator for restlang",
   "main": "edda.js",
   "dependencies": {
-    "jade": "~1.3.1"
+    "underscore": "1.6.x",
+    "restlang": "*"
   },
   "devDependencies": {},
   "scripts": {
@@ -15,10 +16,13 @@
     "url": "git://github.com//binarymax/edda.git"
   },
   "keywords": [
-    "documentation",
+    "restlang",
     "heimdall",
     "api",
-    "rest"
+    "template",
+    "generation",
+    "generate",
+    "parse"
   ],
   "author": "Max Irwin",
   "license": "MIT"
