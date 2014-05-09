@@ -12,7 +12,6 @@ var _ = require('underscore');
 
 var Edda = module.exports = {};
 
-
 var load = function(path,callback) {
 
 	var api = [];
@@ -49,11 +48,34 @@ var load = function(path,callback) {
 		}
 	});
 
-}
+};
 
-var run = Edda.run = function(path,template,out) {
+var generate = function(api,template,callback) {
+	fs.readFile(template,'utf8',function(err,source){
+		if (err) {
+			callback(err);
+		} else {
+			template = _.template(source);
+			source = template({api:api});
+			callback(null,source);
+		}
+	});
+};
+
+var run = Edda.run = function(path,template,settings,outfile) {
+	if(settings) {
+		_.templateSettings = {
+		  interpolate: /\{\{(.+?)\}\}/g
+		};
+	}
+
 	load(path,function(err,api){
-		console.log(err);
-		console.log(api);
+		generate(api,template,function(err,out){
+			if(err) {
+				console.error(err);
+			} else {
+				console.log(out);
+			}
+		})
 	});
 };
