@@ -6,22 +6,67 @@
  *
  * ********************************************/
 
-var heimdall  = require('heimdall');
+var heimdall = require('heimdall');
 var datatype = heimdall.datatypes;
 
-module.exports = {
-	<% _.each(api,function(resource) { %> 
-		name: "<%=resource.name%>",
-		description: "<%=resource.description%>",
-		api: {
-			<% _.each(resource.resource,function(route,key) { %>			
-				<%=edda.method(route)%>:{
-					description:"<%=route.description%>",
-					params:{},
-					fields:{},
-					command: "<%=route.command%>"
-				}
-			<%});%>
+module.exports = { 
+	resources: [
+	<% edda.resources(api,function(resource,resourcecomma) { %>
+		<%=resourcecomma%>{
+			name: "<%=resource.name%>",
+			description: "<%=resource.description%>",
+			api: {
+				<% edda.methods(resource,function(route,key,methodcomma) { %>
+					<%=methodcomma%><%=edda.method(route)%>:{
+
+						description:"<%=route.description%>",
+
+						<% if(edda.exists(route.params)) {%>
+						params:{
+							<% _.each(route.params,function(param,key){ %>
+							<%=key%>:datatype.<%=param.type%>("<%=param.description%>",<%=(param.required?"true":"false")%>);
+							<% }); %>
+						},
+						<% } %>
+
+						<% if(edda.exists(route.query)) {%>
+						query:{
+							<% _.each(route.query,function(query,key){ %>
+							<%=key%>:datatype.<%=query.type%>("<%=query.description%>",<%=(query.required?"true":"false")%>);
+							<% }); %>
+						},
+						<% } %>
+
+						<% if(edda.exists(route.body)) {%>
+						body:{
+							<% _.each(route.body,function(body,key){ %>
+							<%=key%>:datatype.<%=body.type%>("<%=body.description%>",<%=(body.required?"true":"false")%>);
+							<% }); %>
+						},
+						<% } %>
+
+						<% if(edda.exists(route.files)) {%>
+						files:{
+							<% _.each(route.files,function(file,key){ %>
+							<%=key%>:datatype.<%=file.type%>("<%=file.description%>",<%=(file.required?"true":"false")%>);
+							<% }); %>
+						},
+						<% } %>
+
+						<% if(edda.exists(route.response)) {%>
+						response:{
+							<% _.each(route.response,function(field,key){ %>
+							<%=key%>:datatype.<%=field.type%>("<%=field.description%>",<%=(field.required?"true":"false")%>);
+							<% }); %>
+						},
+
+						<% } %>
+
+						command: "<%=route.command%>"
+					}
+				<%});%>
+			}
 		}
 	<%});%>
-}
+	
+]}
