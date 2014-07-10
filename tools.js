@@ -4,31 +4,37 @@ var edda = (function(){
 	var Tools = {};
 
 	Tools.exists = function(obj) {
-		if (typeof obj !== "object") return false;
+		if(!_.isObject(obj)) return false;
+
 		for(var key in obj) {
-			if(obj.hasOwnProperty(key) && typeof obj[key] === 'object') {
+			if(obj.hasOwnProperty(key) && _.isObject(obj[key])) {
 				return true;
 			}
 		}
+
 		return false;
 	};
 
 	Tools.resources = function(api,callback) {
-		var comma = false;
-		_.each(api,function(resource) {
-			callback(resource,(comma)?',':'');
-			comma = true;
-		});
+		if(_.isArray(api)) {
+			var comma = false;
+			for (var i=0;i<api.length;i++) {
+				callback(api[i],api[i].name,(comma)?',':'');
+				comma = true;
+			}
+		}
 	}
 
 	Tools.methods = function(resource,callback) {
-		var comma = false;
-		_.each(resource.resource,function(route,key) {
-			if(route.name) {
-				callback(route,key,(comma)?',':'');
+		if(_.isArray(resource.methods)) {
+			var comma = false;
+			console.log(resource);
+			var methods = resource.methods;
+			for (var i=0;i<methods.length;i++) {
+				callback(methods[i],methods[i].name,(comma)?',':'');
 				comma = true;
 			}
-		});
+		}
 	};
 
 	Tools.method = function(route) {
