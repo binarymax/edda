@@ -17,7 +17,7 @@ module.exports = {
 			description: "<%=resource.description%>",
 			api: {
 				<% edda.methods(resource,function(route,key,methodcomma) { %>
-					<%=methodcomma%><%=route.verb%>:{
+					<%=methodcomma%><%=edda.method(route)%>:{
 
 						description:"<%=route.description%>",
 
