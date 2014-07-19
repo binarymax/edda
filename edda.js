@@ -69,10 +69,11 @@ var generate = function(data,template,callback) {
 			callback(err);
 		} else {
 			var resources = [];
+			var api = data.api;
 			template = _.template(source);
-			for(var i=0,l=data.api.length;i<l;i++) {
-				var resource = data.api[i];
-				resource.output = template({api:[resource],edda:tools});
+			for(var i=0,l=api.length;i<l;i++) {
+				var resource = api[i];
+				resource.output = template({api:[resource],edda:tools,version:data.version});
 				resource.output = resource.output.replace(/(\n\s+\n)+/g,'\n');
 				resources.push(resource);
 			}

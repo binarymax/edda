@@ -23,7 +23,7 @@ var edda = (function(){
 				comma = true;
 			}
 		}
-	}
+	};
 
 	Tools.methods = function(resource,callback) {
 		if(_.isArray(resource.methods)) {
@@ -35,6 +35,44 @@ var edda = (function(){
 				comma = true;
 			}
 		}
+	};
+
+	Tools.controllers = function(api,callback) {
+		if(_.isArray(api)) {
+			var controllers = api.controllers = {};
+			var controllerhash = api.controllerhash = {};
+			for(var i=0;i<api.length;i++) {
+				var resource = api[i]; 
+				if (resource.methods) for(var j=0;j<resource.methods.length;j++) {
+					var method = resource.methods[j];
+					if (method.command) {
+						var command  = method.command.split('#');
+						if (command.length) {
+							var controller = controllers[command[0]] = controllers[command[0]] || {path:command[0],name:resource.name,methods:[],count:0};
+							var controllermethod = {name:resource.name,location:command[0],method:command[1]};
+							controller.methods.push(controllermethod);
+							controllerhash[method.command] = controllermethod;
+							controller.count++;
+						}
+					}
+				}
+			}
+			var num = 0;
+			for(var c in controllers) {
+				if(controllers.hasOwnProperty(c)) {
+					var controller = controllers[c];
+					callback(controller.name,controller.path);
+				}
+			}
+		}
+	};
+
+	Tools.command = function(api,command,controller) {
+		var ch;
+		if(api.controllerhash && (ch=api.controllerhash[command])) {
+			return ch.name+controller+ch.method;
+		}
+		return null;
 	};
 
 	Tools.method = function(route) {
