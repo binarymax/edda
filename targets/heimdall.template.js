@@ -9,6 +9,11 @@
 var heimdall = require('heimdall');
 var datatype = heimdall.datatypes;
 
+<% edda.locals = {controller:'controller'} %>
+<% edda.controllers(api,function(name,location) { %>
+var <%=name%><%=edda.locals.controller%> = require('<%=location%>');
+<% }); %>
+
 module.exports = { 
 	resources: [
 	<% edda.resources(api,function(resource,resourcecomma) { %>
@@ -62,7 +67,7 @@ module.exports = {
 
 						<% } %>
 
-						command: "<%=route.command%>"
+						command: <%=edda.command(api,route.command,edda.locals.controller+'.')||"function(){}"%>
 					}
 				<%});%>
 			}
