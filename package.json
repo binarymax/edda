@@ -1,6 +1,6 @@
 {
   "name": "edda",
-  "version": "0.2.2",
+  "version": "0.2.3",
   "description": "Output generator for restlang",
   "main": "edda.js",
   "dependencies": {
