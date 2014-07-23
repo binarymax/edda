@@ -17,7 +17,7 @@ var <%=name%><%=edda.locals.controller%> = require('<%=location%>');
 module.exports = { 
 	resources: [
 	<% edda.resources(api,function(resource,resourcecomma) { %>
-		<%=resourcecomma%>{
+		{
 			name: "<%=resource.name%>",
 			description: "<%=resource.description%>",
 			api: {
@@ -29,7 +29,7 @@ module.exports = {
 						<% if(edda.exists(route.params)) {%>
 						params:{
 							<% _.each(route.params,function(param,key){ %>
-							<%=key%>:datatype.<%=param.type%>("<%=param.description%>",<%=(param.required?"true":"false")%>);
+							<%=key%>:datatype.<%=param.type%>("<%=param.description%>",<%=(param.required?"true":"false")%>),
 							<% }); %>
 						},
 						<% } %>
@@ -37,7 +37,7 @@ module.exports = {
 						<% if(edda.exists(route.query)) {%>
 						query:{
 							<% _.each(route.query,function(query,key){ %>
-							<%=key%>:datatype.<%=query.type%>("<%=query.description%>",<%=(query.required?"true":"false")%>);
+							<%=key%>:datatype.<%=query.type%>("<%=query.description%>",<%=(query.required?"true":"false")%>),
 							<% }); %>
 						},
 						<% } %>
@@ -45,7 +45,7 @@ module.exports = {
 						<% if(edda.exists(route.body)) {%>
 						body:{
 							<% _.each(route.body,function(body,key){ %>
-							<%=key%>:datatype.<%=body.type%>("<%=body.description%>",<%=(body.required?"true":"false")%>);
+							<%=key%>:datatype.<%=body.type%>("<%=body.description%>",<%=(body.required?"true":"false")%>),
 							<% }); %>
 						},
 						<% } %>
@@ -53,25 +53,28 @@ module.exports = {
 						<% if(edda.exists(route.files)) {%>
 						files:{
 							<% _.each(route.files,function(file,key){ %>
-							<%=key%>:datatype.<%=file.type%>("<%=file.description%>",<%=(file.required?"true":"false")%>);
+							<%=key%>:datatype.<%=file.type%>("<%=file.description%>",<%=(file.required?"true":"false")%>),
 							<% }); %>
 						},
 						<% } %>
 
+						/*
 						<% if(edda.exists(route.response)) {%>
 						response:{
 							<% _.each(route.response,function(field,key){ %>
-							<%=key%>:datatype.<%=field.type%>("<%=field.description%>",<%=(field.required?"true":"false")%>);
+							<%=key%>:datatype.<%=field.type%>("<%=field.description%>",<%=(field.required?"true":"false")%>),
 							<% }); %>
 						},
 
 						<% } %>
-
+						*/
+						
 						command: <%=edda.command(api,route.command,edda.locals.controller+'.')||"function(){}"%>
 					}
 				<%});%>
 			}
 		}
 	<%});%>
+	
 	
 ]}

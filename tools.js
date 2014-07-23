@@ -28,7 +28,6 @@ var edda = (function(){
 	Tools.methods = function(resource,callback) {
 		if(_.isArray(resource.methods)) {
 			var comma = false;
-			console.log(resource);
 			var methods = resource.methods;
 			for (var i=0;i<methods.length;i++) {
 				callback(methods[i],methods[i].name,(comma)?',':'');
