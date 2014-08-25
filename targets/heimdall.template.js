@@ -61,14 +61,47 @@ module.exports = {
 						/*
 						<% if(edda.exists(route.response)) {%>
 						response:{
-							<% _.each(route.response,function(field,key){ %>
+							<% edda.response(route.response,function(field,key){ %>
 							<%=key%>:datatype.<%=field.type%>("<%=field.description%>",<%=(field.required?"true":"false")%>),
 							<% }); %>
 						},
 
 						<% } %>
 						*/
-						
+
+						/*
+						<% if(edda.exists(route.response)) {%>
+
+						response:{
+
+							<% (function(){
+									var stack = [];
+									var responses = function(response) {
+										_.each(response,function(field,key){ 
+											if(field.type==='object' && field.response) {
+												print(key,':{\n',edda.repeat('\t',stack.length+8));
+												stack.unshift('}');
+												responses(field.response);
+											} else if (field.type==='array' && field.response) {
+												print(key,':[{\n',edda.repeat('\t',stack.length+8));
+												stack.unshift('}]');
+												responses(field.response);
+											} else {
+												print(key,':datatype.',field.type,'("',field.description,'",',field.required?"true":"false",'),\n',edda.repeat('\t',stack.length+7));
+											}			
+										});
+										print(stack.shift());
+									};
+									responses(route.response);
+								})();
+							%>
+
+						},
+
+						<% } %>
+						*/
+
+
 						command: <%=edda.command(api,route.command,edda.locals.controller+'.')||"function(){}"%>
 					}
 				<%});%>

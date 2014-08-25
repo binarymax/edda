@@ -94,6 +94,28 @@ var edda = (function(){
 		return verb;
 	};
 
+	Tools.response = function(response,callback) {
+		_.each(response,function(field,key) {
+			//console.log(field);
+			if(field.type==='object' && field.response) {
+
+				callback(field,key);
+				Tools.response(field.response,callback);
+
+			} else if (field.type==='array' && field.response) {
+
+				callback(field,key);
+				Tools.response(field.response,callback);
+
+			} else {
+
+				callback(field,key);
+
+			}
+
+		});
+	};
+
 	Tools.route = function(resource,route) {
 		var str = '/' + resource + '/';
 		if (route && route.params) {
@@ -101,6 +123,12 @@ var edda = (function(){
 				str+=':'+param+'/';
 			}
 		}
+		return str;
+	};
+
+	Tools.repeat = function(char,length) {
+		var str = "";
+		while(length--) str += char;
 		return str;
 	};
 
