@@ -34,12 +34,14 @@ var load = function(path,callback) {
 					(function(path,file){
 						fs.readFile(path+file,'utf8',function(err,source){
 							if (err) {
+								err.file = file;
 								errors.push(err);
 							} else {
 								var spec = null;
 								try { 
 									spec = rest(source);
 								} catch (ex) {
+									ex.file = file;
 									errors.push(ex);
 								}
 								if (spec && spec instanceof Array) {
@@ -92,6 +94,14 @@ var run = Edda.run = function(path,template,data,settings,callback) {
 	template = (~template.indexOf('/')?'':(__dirname+'/targets/')) + template;
 
 	load(path,function(err,loaded){
+		if(err) {
+			console.error('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
+			console.error('WARNING! Restlang found the following errors, these specifications were not built:')
+			for(var i=0,l=err.length;i<l;i++) {
+				console.log(err[i]);
+			};
+			console.error('-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=')
+		}
 		data.edda = tools;
 		data.api = loaded.api;
 		data.files = loaded.files;
